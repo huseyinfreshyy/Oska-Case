@@ -1,7 +1,6 @@
-// controllers/downloadController.js
+const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-const rp = require('request-promise-native');
 
 const downloadFile =  async (req, res) => {
   const downloadLink = req.body.downloadLink;
@@ -11,16 +10,29 @@ const downloadFile =  async (req, res) => {
   }
 
   
-  const filePath = path.join(__dirname, '..', 'downloads', 'file.exe');
-
   try {
-    await rp({ uri: downloadLink, encoding: null }).pipe(fs.createWriteStream(filePath));
+    const fileUrl = downloadLink;
+    if (!fileUrl) {
+      return res.status(400).send('No URL provided');
+    }
+
+    // Download file from URL using Axios
+    const response = await axios.get(fileUrl, {
+      responseType: 'stream',
+    });
+
+    // Determine the file name and extension
+    const fileName = path.basename(new URL(fileUrl).pathname);
     
-    res.setHeader('Content-disposition', 'attachment; filename=file.exe');
-    const file = fs.createReadStream(filePath);
-    file.pipe(res);
+    // Set the headers for the download
+    res.setHeader('Content-Type', response.headers['content-type']);
+    res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+
+    // Stream the file to the client
+    response.data.pipe(res);
   } catch (error) {
-    res.status(500).json({ message: 'Error downloading the file' });
+    console.error('Error:', error);
+    res.status(500).send('An error occurred');
   }
 
 };
