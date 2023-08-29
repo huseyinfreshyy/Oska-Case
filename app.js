@@ -1,10 +1,23 @@
-var express = require('express');
-var app = express();
-const port = 5000;
-app.get('/', function (req, res) {
-    res.send("Hello World!");
-});
+const express = require('express');
+const downloadRoutes = require('./routes/downloadRoutes');
+const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken');
+const app = express();
 
-app.listen(port, ()=>{
-    console.log(`Application running on port: ${port}`)
+app.use(cookieParser())
+
+app.use("/", function (req, res){
+  const user = { id: 123, username: 'user' };
+  const token = jwt.sign(user, 'Oska', { expiresIn: '1h' });
+  res.cookie("token",token, {
+    httpOnly: true
+  })
+  res.send("OSKA");
+})
+
+app.use('/download', downloadRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
