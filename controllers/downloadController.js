@@ -4,6 +4,7 @@ const path = require('path');
 
 const downloadFile =  async (req, res) => {
   const downloadLink = req.body.downloadLink;
+  console.log(downloadLink)
 
   if (!downloadLink) {
     return res.status(400).json({ message: 'Missing downloadLink' });
