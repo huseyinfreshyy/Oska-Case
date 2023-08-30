@@ -3,7 +3,7 @@ const router = express.Router();
 const downloadController = require('../controllers/downloadController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
-router.post('/verify', authMiddleware.verifyToken);
-router.post('/', downloadController.downloadFile)
+router.post('/', authMiddleware.verifyToken);
+router.post('/download', downloadController.downloadFile ,authMiddleware.verifyToken)
 
 module.exports = router;
