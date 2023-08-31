@@ -2,10 +2,18 @@
 
 Merhabalar,
 Bu projede  <a href="https://oska.com.tr/">Oska Yazılım</a>'ın  bana göndermiş olduğu case'i yaptım. <br>
-<b>Case:</b>
+# Index
+- [Case](#case)<br/>
+- [Route](#route)<br/>
+- [Authentication](#authentication)<br/>
+- [Download](#download)<br/>
+- [Test](#test)<br/>
+
+# Case
 <img src="https://i.hizliresim.com/a42xo3r.png"></img>
 
-```
+# Route
+```JavaScript
 app.use("/", pageRoutes)
 
 app.use('/download', downloadRoutes);
@@ -21,7 +29,7 @@ app.listen(PORT, () => {
 index sayfasına istek atıldığında **pageRoutes**'a istek atılmaktadır.
 
 pageRoutes.js
-```
+```JavaScript
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware.js');
@@ -33,7 +41,7 @@ module.exports = router;
 pageRoutes API'ye get isteği atarak **JSON Web Token(JWT)** oluşturmaktadır. Bu JWT authMiddleware.createToken ile yapılmaktadır.
 
 authMiddleware.js
-```
+```JavaScript
 const createToken =(req,res) =>{
     const user = { id: 123, username: 'user' };
     const token = jwt.sign(user, process.env.SECRET_TOKEN, { expiresIn: '1h' });
@@ -49,7 +57,7 @@ Token oluşturulduktan sonra localhost:PORT/download'a **POST** isteği atılara
 
 downloadRoutes.js
 
-```
+```JavaScript
 const express = require('express');
 const router = express.Router();
 const downloadController = require('../controllers/downloadController.js');
@@ -63,10 +71,10 @@ module.exports = router;
 
 POST isteği ```dowloandController.downloadFile``` ve ```authMiddleware.verifyToken``` işlemlerini tetikler.
 
-**KİMLİK DOĞRULAMA**
+# Authentication
 
 authMiddleware.js
-```
+```JavaScript
 const verifyToken = (req, res, next) => {
   const token = req.cookies.token;
   console.log(token)
@@ -89,9 +97,11 @@ Burada token cookieden alınarak doğrulama yapılır eğer doğrulama başarıl
 
 Ve indirme işlemi başlatılır.
 
+# Download
+
 downloadController.js
 
-```
+```JavaScript
 const downloadFile = async (req, res) => {
   const downloadLink = req.body.downloadLink;
   console.log(downloadLink)
@@ -129,7 +139,7 @@ const downloadFile = async (req, res) => {
 ```
 İndirme işlemi sırasında Body'den gelen link alınır. Öncelikle link olup olmadığı kontrol edilir. Eğer var ise ```axios``` ile indirme işlemi gerçekleşir.
 
-# UYGULAMA
+# TEST
 
 Aşağıdaki resimlerde görüldüğü üzere  ThunderClient'taki test aşamaları vardır.
 
