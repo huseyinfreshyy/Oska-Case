@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const downloadController = require('../controllers/downloadController.js');
 const authMiddleware = require('../middlewares/authMiddleware.js');
+
 router.post('/verify', authMiddleware.verifyToken);
 router.post('/', downloadController.downloadFile ,authMiddleware.verifyToken)
 
