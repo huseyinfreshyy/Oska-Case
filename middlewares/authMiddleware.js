@@ -1,5 +1,13 @@
 const jwt = require('jsonwebtoken');
 
+const createToken =(req,res) =>{
+    const user = { id: 123, username: 'user' };
+    const token = jwt.sign(user, 'Oska', { expiresIn: '1h' });
+    res.cookie("token",token, {
+      httpOnly: true
+    })
+    res.send("token created: " + token);
+}
 const verifyToken = (req, res, next) => {
   const token = req.cookies.token;
   console.log(token)
@@ -20,5 +28,6 @@ const verifyToken = (req, res, next) => {
 
 module.exports = {
   verifyToken,
+  createToken
 };
   
